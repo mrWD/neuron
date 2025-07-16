@@ -6,59 +6,58 @@ using System.Threading.Tasks;
 
 namespace Neuron
 {
-    public class Neuron
-    {
-        public decimal weight = 0.5m; // Example weight for a neuron
-        public decimal Error;
-        public decimal Smooth = 0.1m; // Example smoothing factor
-
-        public decimal Calculate(decimal input)
-        {
-            // Simple activation function
-            return input * weight;
-        }
-
-        public decimal Reverse(decimal input)
-        {
-            // Reverse the activation function
-            return input / weight;
-        }
-
-        public void Train(decimal input, decimal expectedValue)
-        {
-            var realValue = input * weight; // 50
-            Error = expectedValue - realValue; // -10
-            var correction = (Error / realValue) * Smooth; // -0.2
-            weight += correction; // 0.48
-        }
-    }
-
     class Program
     {
+        /// <summary>
+        /// This method attempts to "train" a simple linear model to convert Celsius to Fahrenheit.
+        /// It does so by brute-forcing all possible combinations of weights (w1 and w2) in the equation:
+        ///     output = celsius * w1 + input2 * w2
+        /// The goal is to find values of w1 and w2 such that the output matches the expected Fahrenheit value.
+        /// For each combination, it prints the step, weights, and output. If the output matches the expected value, it pauses for a key press.
+        /// This is a naive approach and not a true machine learning training loop, but demonstrates the concept of searching for optimal parameters.
+        /// </summary>
         static void Main(string[] args)
         {
-            decimal cm = 100;
-            decimal inch = 39.370m;
+            decimal celsius = 100;
+            decimal expectedFahrenheit = 212;
+            decimal input2 = 1;
+            decimal output = 1;
+            int step = 1;
 
-            Neuron neuron = new Neuron();
 
-            int i = 0;
 
-            do
+            for (decimal w2 = 0.1m; w2 < 100; w2 += 0.1m)
             {
-                i++;
-                neuron.Train(cm, inch);
-                Console.WriteLine($"Step: {i}\nError: {neuron.Error}");
-                Console.WriteLine($"Weight: {neuron.weight}\n");
-            } while (neuron.Error > neuron.Smooth || neuron.Error < -neuron.Smooth);
+                for (decimal w1 = 0.1m; w1 < 100; w1 += 0.1m)
+                {
+                    output = celsius * w1 + input2 * w2;
+                    Console.WriteLine($"\nStep: {step},\nw1: {w1},\nw2: {w2},\nOutput: {output}\n");
+                    // Console.ReadKey();
 
-            Console.WriteLine($"Done! Weight: {neuron.weight}");
+                    if (output == expectedFahrenheit)
+                    {
+                        // Step: 19002,
+                        // w1: 2.1,
+                        // w2: 2.0,
+                        // Output: 212.0
+                        // ...
+                        // Step: 118901,
+                        // w1: 2.0,
+                        // w2: 12.0,
+                        // Output: 212.0
+                        // ...
+                        // Step: 318699,
+                        // w1: 1.8,
+                        // w2: 32.0,
+                        // Output: 212.0
+                        Console.ReadKey();
+                    }
 
-            Console.WriteLine($"{neuron.Calculate(100)} inches for {100} cm");
-            Console.WriteLine($"{neuron.Calculate(300)} inches for {300} cm");
-            Console.WriteLine($"{neuron.Reverse(50)} cm for {50} inches");
+                    step += 1;
+                }
+            }
 
-            Console.ReadLine();
+            Console.ReadKey();
         }
     }
 }
