@@ -73,7 +73,7 @@ namespace Neuron
 
                 activation3 = a1 * w7 + a2 * w8;
 
-                if (activation3 == 1) { return 1; } else return 0;
+                if (activation3 >= 0.5m) { return 1; } else return 0;
             }
 
             long step = 1;
